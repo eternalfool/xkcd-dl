@@ -42,6 +42,7 @@ class Unittests(unittest.TestCase):
         mock_api_call.return_value.content = res
 
         update_dict()
+
         with open(tmp_file.name) as json_file:
             data = json.load(json_file)
         assert len(data) == 1849
@@ -77,16 +78,20 @@ class Unittests(unittest.TestCase):
     def test_valid_comic(self, mock_api_call):
         from tests.inputs import INFO_URL_DATA
         res = INFO_URL_DATA
+
         mock_api_call.return_value.status_code = 200
         mock_api_call.return_value.json.return_value = res
+
         assert is_valid_comic(100) == True
 
     @mock.patch('xkcd_dl.cli.requests.get')
     def test_invalid_comic(self, mock_api_call):
         from tests.inputs import INFO_URL_DATA
         res = INFO_URL_DATA
+
         mock_api_call.return_value.status_code = 200
         mock_api_call.return_value.json.return_value = res
+
         assert is_valid_comic(9999999999999999) == False
 
     @mock.patch('xkcd_dl.cli.shutil.copyfileobj')
@@ -158,8 +163,5 @@ class Unittests(unittest.TestCase):
 
     @mock.patch('xkcd_dl.cli.requests.get')
     def test_download_exclusion_list(self, mock_api_call):
-        """
-        Tests whether correct output is written to stdout if a num from exclusion list is passed
-        """
         download_one(get_fake_xkcd_json_dict(), 1525)
         assert "1525 is special. It does not have an image." in sys.stdout.getvalue()
